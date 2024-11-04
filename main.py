@@ -7,41 +7,50 @@ import getpass
 import spacy
 import sv_core_news_lg
 import re
+from colorama import Fore
+from art import * 
 
 
 from selenium.webdriver.remote.webelement import WebElement
 
 def main():
-    print("WARNING! THIS PROGRAM IS NOT FLAWLESS! ")
-    print("ALWAYS AT ALL TIMES DOUBLE CHECK THE WORK!!!")
+    tprint("COURSE REVIEW ANONYMIZER")
+    print(Fore.RED + "WARNING! THIS PROGRAM IS NOT FLAWLESS! ")
+    print(Fore.RED + "ALWAYS AT ALL TIMES DOUBLE CHECK THE WORK!!!")
     username, password = get_login_details()
     website = pick_website()
     text_list = get_website_and_text(username, password, website)
     text_dictionary = mark_named_entities(text_list)
-    print(text_dictionary)
+    change_entity_name(text_dictionary)
 
 
 
 def get_website_and_text(username, password, website):
-    """Takes username, password and website previously provided by user. 
+    """
+    The function takes login details and a URL to login the user.
+    
+    The function takes username, password and website previously provided by user. 
     The function opens an instance of firefox and fill out the login 
     details of the user and logs them in to the chosen URL.
     The function then grabs the HTML code and pass it to beautifulsoup
     to find all textarea tags and appends them to a list and return it.
-
 
     Keyword arguments:
     username -- provided username by the user
     website --  URL provided by the user
     password -- users password to the website
     """
-    options = webdriver.FirefoxOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Firefox(options=options)
-    driver.get(website)
-    driver.find_element("id", "username").send_keys(username)
-    driver.find_element("id", "password").send_keys(password)
-    driver.find_element("name", "_eventId_proceed").click()
+    try:
+        options = webdriver.FirefoxOptions()
+        options.add_argument("--headless")
+        driver = webdriver.Firefox(options=options)
+        driver.get(website)
+        driver.find_element("id", "username").send_keys(username)
+        driver.find_element("id", "password").send_keys(password)
+        driver.find_element("name", "_eventId_proceed").click()
+    except:
+        print("Could not log in for some reason. Check that username and password is correct.")
+        
     html = driver.page_source
     soup = bs(html, "html.parser")
     text_list=[]
@@ -52,26 +61,49 @@ def get_website_and_text(username, password, website):
     return text_list
     
 def change_entity_name(text_dictionary):
+    """
+    Changes the name of marked entities.
+
+    The function iterates over a dictionary
+    where they key is the original text and 
+    modifies a copy of it for comparison later.
+
+    Keyword arguments:
+    text_dictionary -- key is text to be modified and value 
+                        is a list of tuple with entities.
+    """
+
     
     for key, value in text_dictionary.items():
         text = str(key)
+        changed_text = text
         for entity in value:
             entity_name , _ = entity
-            if entity_name in text:
-                changed_text = text.replace(entity_name, "lärare X")
+            changed_text = changed_text.replace(entity_name, "lärare X")
         
         change_pronouns(changed_text, text)   
 
 
 def change_pronouns(changed_text, text):
-    pronouns = ["\b[Dd]u\b", "\b[Hh][ao]n\b"]
 
-    changed_text = re.sub(pronouns[0], "lärare X", changed_text)
-    changed_text = re.sub(pronouns[1], "hen", changed_text)
+    """
+    Replaces swedish gendered pronouns with gender neutral pronouns.
+
+    This function replaces gendered swedish pronouns with gender neutral
+    to make guessing who the text is referencing harder. The edited text 
+    is tehn printed with the original text.
+
+    Keyword arguments:
+    changed_text -- text with edited entities
+    text -- The original text with unchanged enities
+    """
+    pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b"]
+
+    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X", changed_text)
+    changed_text = re.sub(pronouns[1], Fore.RED + "hen", changed_text)
 
     print("-------------------------------------------------")
     print("original text: ")
-    print("\n")
     print(text)     
     print("\n")
     print("edited text: ")
@@ -98,7 +130,7 @@ def get_login_details():
     return   -- username, password
     """
 
-    username = input("please enter your username: ")
+    username = input(Fore.WHITE + "please enter your username: ")
     password = getpass.getpass() 
 
     return username, password
