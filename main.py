@@ -149,8 +149,8 @@ def mark_named_entities(text_list):
     and lable as the item. 
 
 
-    doc -- 
-    elist -- 
+    Keyword arguments: 
+    text_list -- a list of strings
     
     """
 
