@@ -111,7 +111,6 @@ def change_pronouns(changed_text, text):
     print("\n")
     print("-------------------------------------------------")
 
-
 def pick_website():
     """
     Takes no arguments and returns the URL specified by 
@@ -125,6 +124,7 @@ def get_login_details():
     users username and password. 
     Password is not echoed back to the user
     
+    Keyword argument
     username -- user input
     password -- user input
     return   -- username, password
@@ -150,7 +150,7 @@ def mark_named_entities(text_list):
 
 
     Keyword arguments: 
-    text_list -- a list of strings
+    text_list -- list of strings
     
     """
 
@@ -165,8 +165,9 @@ def mark_named_entities(text_list):
 
     return text_dictionary
 
-        
-    
+
+def create_pdf():
+    pass 
 
 if __name__ == "__main__":
     main()
