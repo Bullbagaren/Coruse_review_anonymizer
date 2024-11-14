@@ -9,8 +9,6 @@ import sv_core_news_lg
 import re
 from colorama import Fore
 from art import * 
-
-
 from selenium.webdriver.remote.webelement import WebElement
 
 def main():
@@ -22,7 +20,6 @@ def main():
     text_list = get_website_and_text(username, password, website)
     text_dictionary = mark_named_entities(text_list)
     change_entity_name(text_dictionary)
-
 
 
 def get_website_and_text(username, password, website):
@@ -73,13 +70,13 @@ def change_entity_name(text_dictionary):
                         is a list of tuple with entities.
     """
 
-    
+    collection ={}
     for key, value in text_dictionary.items():
         text = str(key)
         changed_text = text
         for entity in value:
             entity_name , _ = entity
-            changed_text = changed_text.replace(entity_name, "lärare X")
+            changed_text = changed_text.replace(entity_name, Fore.RED + "lärare X" + Fore.WHITE)
         
         change_pronouns(changed_text, text)   
 
@@ -99,8 +96,8 @@ def change_pronouns(changed_text, text):
     """
     pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b"]
 
-    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X", changed_text)
-    changed_text = re.sub(pronouns[1], Fore.RED + "hen", changed_text)
+    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X" + Fore.WHITE, changed_text)
+    changed_text = re.sub(pronouns[1], Fore.RED + "hen" + Fore.WHITE, changed_text)
 
     print("-------------------------------------------------")
     print("original text: ")
@@ -110,6 +107,7 @@ def change_pronouns(changed_text, text):
     print(changed_text)
     print("\n")
     print("-------------------------------------------------")
+    
 
 
 def pick_website():
@@ -125,6 +123,7 @@ def get_login_details():
     users username and password. 
     Password is not echoed back to the user
     
+    Keyword argument
     username -- user input
     password -- user input
     return   -- username, password
@@ -150,7 +149,7 @@ def mark_named_entities(text_list):
 
 
     Keyword arguments: 
-    text_list -- a list of strings
+    text_list -- list of strings
     
     """
 
@@ -165,8 +164,6 @@ def mark_named_entities(text_list):
 
     return text_dictionary
 
-        
-    
 
 if __name__ == "__main__":
     main()
