@@ -166,8 +166,12 @@ def mark_named_entities(text_list):
     return text_dictionary
 
 
-def create_pdf():
-    pass 
+def sentence_seperator(text_block):
+    split_text = re.split(".[\s \t \n]")
+    return split_text
+
+
+
 
 if __name__ == "__main__":
     main()
