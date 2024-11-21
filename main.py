@@ -1,14 +1,16 @@
-
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from bs4 import BeautifulSoup as bs
 import getpass
 import spacy
 import sv_core_news_lg
 import re
+import pickle
 from colorama import Fore
 from art import * 
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup as bs
+from sentence_transformers import SentenceTransformer, similarity_functions
+from torch import embedding
 
 
 from selenium.webdriver.remote.webelement import WebElement
@@ -20,8 +22,9 @@ def main():
     username, password = get_login_details()
     website = pick_website()
     text_list = get_website_and_text(username, password, website)
-    text_dictionary = mark_named_entities(text_list)
-    change_entity_name(text_dictionary)
+    sematic_analysis(text_list)
+    #text_dictionary = mark_named_entities(text_list)
+    #change_entity_name(text_dictionary)
 
 
 
@@ -31,7 +34,7 @@ def get_website_and_text(username, password, website):
     
     The function takes username, password and website previously provided by user. 
     The function opens an instance of firefox and fill out the login 
-    details of the user and logs them in to the chosen URL.
+    The function opens an instance of firefox and fill out the login 
     The function then grabs the HTML code and pass it to beautifulsoup
     to find all textarea tags and appends them to a list and return it.
 
@@ -166,12 +169,36 @@ def mark_named_entities(text_list):
     return text_dictionary
 
 
-def sentence_seperator(text_block):
-    split_text = re.split(".[\s \t \n]")
-    return split_text
+def sematic_analysis(text_list):
+    for textblock in text_list:
+        tokenized_text = sentence_seperator(textblock)
+        similarity_matrix = cosine_comp(tokenized_text)  
+        print(similarity_matrix)
 
 
+
+
+def sentence_seperator(textblock):
+    tokenized_text= re.split("\.[\s \t \n]", textblock)
+    return tokenized_text 
+
+
+
+def cosine_comp(split_text):
+
+    '''ppw stand for potentially problamatic words'''
+    with open("embeddings.pickle", "rb") as file:
+        vector_data = pickle.load(file)
+
+    model = SentenceTransformer("KBLab/sentence-bert-swedish-cased")
+    st_embeddings = model.encode(split_text)
+    
+    similarity_matrix = model.similarity(st_embeddings, vector_data)
+    return similarity_matrix
+    ## some code nened to actually highlight the problamatic words
+    ## will add later, this will do for now.
+    
 
 
 if __name__ == "__main__":
-    main()
+   main()
