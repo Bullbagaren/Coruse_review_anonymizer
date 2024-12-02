@@ -1,9 +1,10 @@
 import getpass
+import torch
 import spacy
 import sv_core_news_lg
 import re
 import pickle
-from colorama import Fore
+from colorama import Back, Fore
 from art import * 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -14,6 +15,7 @@ from torch import embedding
 
 
 from selenium.webdriver.remote.webelement import WebElement
+from torch._higher_order_ops.while_loop import WhileLoopOp
 
 def main():
     tprint("COURSE REVIEW ANONYMIZER")
@@ -22,9 +24,9 @@ def main():
     username, password = get_login_details()
     website = pick_website()
     text_list = get_website_and_text(username, password, website)
-    sematic_analysis(text_list)
-    #text_dictionary = mark_named_entities(text_list)
-    #change_entity_name(text_dictionary)
+    analysed_text_list = semantic_analysis(text_list)
+    text_dictionary = mark_named_entities(analysed_text_list)
+    change_entity_name(text_dictionary)
 
 
 
@@ -61,6 +63,7 @@ def get_website_and_text(username, password, website):
         text_list.append(tag.text)
 
     driver.quit()
+    text_list = list(filter(None, text_list))
     return text_list
     
 def change_entity_name(text_dictionary):
@@ -82,7 +85,7 @@ def change_entity_name(text_dictionary):
         changed_text = text
         for entity in value:
             entity_name , _ = entity
-            changed_text = changed_text.replace(entity_name, "lärare X")
+            changed_text = changed_text.replace(entity_name, Fore.RED + "lärare X" + Fore.WHITE)
         
         change_pronouns(changed_text, text)   
 
@@ -102,8 +105,8 @@ def change_pronouns(changed_text, text):
     """
     pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b"]
 
-    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X", changed_text)
-    changed_text = re.sub(pronouns[1], Fore.RED + "hen", changed_text)
+    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X" + Fore.WHITE, changed_text)
+    changed_text = re.sub(pronouns[1], Fore.RED + "hen" + Fore.WHITE, changed_text)
 
     print("-------------------------------------------------")
     print("original text: ")
@@ -169,34 +172,49 @@ def mark_named_entities(text_list):
     return text_dictionary
 
 
-def sematic_analysis(text_list):
+def semantic_analysis(text_list):
+    with open("embeddings.pickle", "rb") as file:
+        vector_data = pickle.load(file)
+
+    analysed_text_list = []
     for textblock in text_list:
         tokenized_text = sentence_seperator(textblock)
-        similarity_matrix = cosine_comp(tokenized_text)  
-        print(similarity_matrix)
+        similarity_matrix = cosine_comp(tokenized_text, vector_data)  
 
+        for vector_idx in range(len(similarity_matrix)):
+            comp_vector = similarity_matrix[vector_idx]
+            if torch.max(comp_vector) >= 0.58:
+                tokenized_text[vector_idx] = Back.YELLOW + tokenized_text[vector_idx] + Back.RESET 
 
+        analysed_text = ". ".join(tokenized_text) 
+        analysed_text_list.append(analysed_text)
+    return analysed_text_list
 
 
 def sentence_seperator(textblock):
+    '''
+    A simple regex command to split a block of text to sentences.
+
+    keyword arguments
+    
+    textblock -- untokenized text
+
+    '''
     tokenized_text= re.split("\.[\s \t \n]", textblock)
+
     return tokenized_text 
 
 
 
-def cosine_comp(split_text):
+def cosine_comp(split_text, vector_data):
 
     '''ppw stand for potentially problamatic words'''
-    with open("embeddings.pickle", "rb") as file:
-        vector_data = pickle.load(file)
 
     model = SentenceTransformer("KBLab/sentence-bert-swedish-cased")
     st_embeddings = model.encode(split_text)
     
     similarity_matrix = model.similarity(st_embeddings, vector_data)
     return similarity_matrix
-    ## some code nened to actually highlight the problamatic words
-    ## will add later, this will do for now.
     
 
 
