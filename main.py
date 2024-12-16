@@ -26,7 +26,30 @@ def main():
     text_list = get_website_and_text(username, password, website)
     analysed_text_list = semantic_analysis(text_list)
     text_dictionary = mark_named_entities(analysed_text_list)
-    change_entity_name(text_dictionary)
+    ct_t_dict = change_entity_name(text_dictionary)
+    push_to_site(username,password,website, ct_t_dict)
+
+def push_to_site(username, password, website, ct_t_dict):
+
+    try:
+        options = webdriver.FirefoxOptions()
+        options.add_argument("--headless")
+        driver = webdriver.Firefox(options=options)
+        driver.get(website)
+        driver.find_element("id", "username").send_keys(username)
+        driver.find_element("id", "password").send_keys(password)
+        driver.find_element("name", "_eventId_proceed").click()
+    except:
+        print("Could not log in for some reason. Check that username and password is correct.")
+    
+    html = driver.page_source
+    soup = bs(html, "html.parser") 
+    for key, value in ct_t_dict.items():
+        search_text = str(key)
+        print(f"searched text: {search_text}")
+        search_pattern = re.compile(search_text)
+        matched_ta =  soup.find_all("textarea")
+        print(f"found text: {matched_ta}")
 
 
 
@@ -79,15 +102,21 @@ def change_entity_name(text_dictionary):
                         is a list of tuple with entities.
     """
 
-    
+    ct_t_dict = {}
     for key, value in text_dictionary.items():
         text = str(key)
         changed_text = text
         for entity in value:
             entity_name , _ = entity
             changed_text = changed_text.replace(entity_name, Fore.RED + "lärare X" + Fore.WHITE)
+       
         
-        change_pronouns(changed_text, text)   
+        text, changed_text = change_pronouns(changed_text, text)   
+        ct_t_dict.update({text:changed_text})
+    return ct_t_dict
+
+
+
 
 
 def change_pronouns(changed_text, text):
@@ -108,14 +137,16 @@ def change_pronouns(changed_text, text):
     changed_text = re.sub(pronouns[0], Fore.RED + "lärare X" + Fore.WHITE, changed_text)
     changed_text = re.sub(pronouns[1], Fore.RED + "hen" + Fore.WHITE, changed_text)
 
-    print("-------------------------------------------------")
-    print("original text: ")
-    print(text)     
-    print("\n")
-    print("edited text: ")
-    print(changed_text)
-    print("\n")
-    print("-------------------------------------------------")
+    return text, changed_text
+
+    #print("-------------------------------------------------")
+    #print("original text: ")
+    #print(text)     
+    #print("\n")
+    #print("edited text: ")
+    #print(changed_text)
+    #print("\n")
+    #print("-------------------------------------------------")
 
 def pick_website():
     """
