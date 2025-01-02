@@ -4,25 +4,20 @@ import spacy
 import sv_core_news_lg
 import re
 import pickle
+import time 
 from colorama import Back, Fore
 from art import * 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
-import getpass
-import spacy
-import sv_core_news_lg
-import re
-from colorama import Fore
-from art import * 
 from sentence_transformers import SentenceTransformer, similarity_functions
 from torch import embedding
 from selenium.webdriver.remote.webelement import WebElement
 from torch._higher_order_ops.while_loop import WhileLoopOp
 
 def main():
-    tprint("COURSE REVIEW ANONYMIZER")
+    tprint("COURSE REVIEW ANONYMIZER", font="small")
     print(Fore.RED + "WARNING! THIS PROGRAM IS NOT FLAWLESS! ")
     print(Fore.RED + "ALWAYS AT ALL TIMES DOUBLE CHECK THE WORK!!!")
     username, password = get_login_details()
@@ -30,16 +25,52 @@ def main():
     text_list = get_website_and_text(username, password, website)
     analysed_text_list = semantic_analysis(text_list)
     text_dictionary = mark_named_entities(analysed_text_list)
-    change_entity_name(text_dictionary)
+    ct_t_dict = change_entity_name(text_dictionary)
+    push_to_site(username,password,website, ct_t_dict)
 
+def push_to_site(username, password, website, ct_t_dict):
+
+    """
+    The function takes username, password, website and a dictionary
+    of the unchanged text as well as the changed text. It logs 
+    in the user and searches for the approriate textareas using the 
+    unchnaged text and then replaces it with the changned text. 
+
+    keyword argument:
+    username  -- user's username
+    password  -- user's password
+    website   -- website's URL 
+    ct_t_dict -- A dictionary of chenged text and unchanegd text
+    """
+
+    try:
+        #options = webdriver.FirefoxOptions()
+        #options.add_argument("--headless")
+        driver = webdriver.Firefox()
+        driver.get(website)
+        driver.find_element("id", "username").send_keys(username)
+        driver.find_element("id", "password").send_keys(password)
+        driver.find_element("name", "_eventId_proceed").click()
+    except:
+        print("Could not log in for some reason. Check that username and password is correct.")
+    
+    html = driver.page_source
+    soup = bs(html, "html.parser") 
+    for tag in soup.find_all("textarea"):
+        element = driver.find_element(By.NAME, tag.get("name"))
+        if element.text.replace("\n", "") in ct_t_dict.values():
+            changed_text = [key for key, value in ct_t_dict.items() if value == element.text.replace("\n", "")]
+            element.clear()
+            element.send_keys(changed_text[0] + "----test")
+
+
+        
 
 def get_website_and_text(username, password, website):
     """
     The function takes login details and a URL to login the user.
-    
     The function takes username, password and website previously provided by user. 
-    The function opens an instance of firefox and fill out the login 
-    The function opens an instance of firefox and fill out the login 
+    The function opens an instance of firefox and fill out the login  
     The function then grabs the HTML code and pass it to beautifulsoup
     to find all textarea tags and appends them to a list and return it.
 
@@ -49,9 +80,9 @@ def get_website_and_text(username, password, website):
     password -- users password to the website
     """
     try:
-        options = webdriver.FirefoxOptions()
-        options.add_argument("--headless")
-        driver = webdriver.Firefox(options=options)
+        #options = webdriver.FirefoxOptions()
+        #options.add_argument("--headless")
+        driver = webdriver.Firefox()
         driver.get(website)
         driver.find_element("id", "username").send_keys(username)
         driver.find_element("id", "password").send_keys(password)
@@ -62,12 +93,13 @@ def get_website_and_text(username, password, website):
     html = driver.page_source
     soup = bs(html, "html.parser")
     text_list=[]
+
     for tag in soup.find_all("textarea"):
-        text_list.append(tag.text)
+        text_list.append(tag.text.replace("\n", ""))
 
     driver.quit()
     text_list = list(filter(None, text_list))
-    return text_list
+    return text_list 
     
 def change_entity_name(text_dictionary):
     """
@@ -82,15 +114,21 @@ def change_entity_name(text_dictionary):
                         is a list of tuple with entities.
     """
 
-    collection ={}
+    ct_t_dict = {}
     for key, value in text_dictionary.items():
         text = str(key)
         changed_text = text
         for entity in value:
             entity_name , _ = entity
-            changed_text = changed_text.replace(entity_name, Fore.RED + "lärare X" + Fore.WHITE)
+            changed_text = changed_text.replace(entity_name, "lärare X")
+       
         
-        change_pronouns(changed_text, text)   
+        text, changed_text = change_pronouns(text, changed_text)   
+        ct_t_dict.update({text:changed_text})
+    return ct_t_dict
+
+
+
 
 
 def change_pronouns(changed_text, text):
@@ -108,18 +146,19 @@ def change_pronouns(changed_text, text):
     """
     pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b"]
 
-    changed_text = re.sub(pronouns[0], Fore.RED + "lärare X" + Fore.WHITE, changed_text)
-    changed_text = re.sub(pronouns[1], Fore.RED + "hen" + Fore.WHITE, changed_text)
+    changed_text = re.sub(pronouns[0], "lärare X", changed_text)
+    changed_text = re.sub(pronouns[1], "hen", changed_text)
 
-    print("-------------------------------------------------")
-    print("original text: ")
-    print(text)     
-    print("\n")
-    print("edited text: ")
-    print(changed_text)
-    print("\n")
-    print("-------------------------------------------------")
-    
+    return text, changed_text
+
+    #print("-------------------------------------------------")
+    #print("original text: ")
+    #print(text)     
+    #print("\n")
+    #print("edited text: ")
+    #print(changed_text)
+    #print("\n")
+    #print("-------------------------------------------------")
 
 def pick_website():
     """
@@ -177,6 +216,14 @@ def mark_named_entities(text_list):
 
 
 def semantic_analysis(text_list):
+    """
+    Takes a list of text to be embedded and then 
+    does a cosine comparison of precalculated 
+    vectors of bad words. 
+
+    ketword arguments:
+    text_list -- a list of tokenized sentences
+    """
     with open("embeddings.pickle", "rb") as file:
         vector_data = pickle.load(file)
 
@@ -188,7 +235,7 @@ def semantic_analysis(text_list):
         for vector_idx in range(len(similarity_matrix)):
             comp_vector = similarity_matrix[vector_idx]
             if torch.max(comp_vector) >= 0.58:
-                tokenized_text[vector_idx] = Back.YELLOW + tokenized_text[vector_idx] + Back.RESET 
+                tokenized_text[vector_idx] = tokenized_text[vector_idx] 
 
         analysed_text = ". ".join(tokenized_text) 
         analysed_text_list.append(analysed_text)
@@ -223,4 +270,6 @@ def cosine_comp(split_text, vector_data):
 
 
 if __name__ == "__main__":
-   main()
+    start_time = time.time()
+    main()
+    print(time.time() - start_time)
