@@ -5,6 +5,7 @@ import sv_core_news_lg
 import re
 import pickle
 import time 
+import tkinter as tk
 from colorama import Back, Fore
 from art import * 
 from selenium import webdriver
@@ -23,9 +24,11 @@ def main():
     username, password = get_login_details()
     website = pick_website()
     text_list = get_website_and_text(username, password, website)
+    text_list = ["Göran var en väldigt bra lärare han gav oss många bra uppgifter att arbeta med", "karin var inte så bra. Det känndes som att hon inte ville vara där."]
     analysed_text_list = semantic_analysis(text_list)
     text_dictionary = mark_named_entities(analysed_text_list)
     ct_t_dict = change_entity_name(text_dictionary)
+    print(ct_t_dict)
     push_to_site(username,password,website, ct_t_dict)
 
 def push_to_site(username, password, website, ct_t_dict):
@@ -60,11 +63,17 @@ def push_to_site(username, password, website, ct_t_dict):
         element = driver.find_element(By.NAME, tag.get("name"))
         if element.text.replace("\n", "") in ct_t_dict.values():
             changed_text = [key for key, value in ct_t_dict.items() if value == element.text.replace("\n", "")]
+            print(changed_text)
             element.clear()
-            element.send_keys(changed_text[0] + "----test")
+            element.send_keys(changed_text[0])
 
 
-        
+def check_changes(ct_t_dict):
+    pass
+
+
+
+
 
 def get_website_and_text(username, password, website):
     """
@@ -80,9 +89,9 @@ def get_website_and_text(username, password, website):
     password -- users password to the website
     """
     try:
-        #options = webdriver.FirefoxOptions()
-        #options.add_argument("--headless")
-        driver = webdriver.Firefox()
+        options = webdriver.FirefoxOptions()
+        options.add_argument("--headless")
+        driver = webdriver.Firefox(options=options)
         driver.get(website)
         driver.find_element("id", "username").send_keys(username)
         driver.find_element("id", "password").send_keys(password)
@@ -131,7 +140,7 @@ def change_entity_name(text_dictionary):
 
 
 
-def change_pronouns(changed_text, text):
+def change_pronouns(text, changed_text):
 
     """
     Replaces swedish gendered pronouns with gender neutral pronouns.
@@ -251,7 +260,7 @@ def sentence_seperator(textblock):
     textblock -- untokenized text
 
     '''
-    tokenized_text= re.split("\.[\s \t \n]", textblock)
+    tokenized_text= re.split("\\.[\\s \\t \\n]", textblock)
 
     return tokenized_text 
 
