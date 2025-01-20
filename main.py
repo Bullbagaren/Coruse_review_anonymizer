@@ -4,18 +4,17 @@ import spacy
 import sv_core_news_lg
 import re
 import pickle
-import time 
-import tkinter as tk
+#import time 
 from colorama import Back, Fore
 from art import * 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
-from sentence_transformers import SentenceTransformer, similarity_functions
-from torch import embedding
+from sentence_transformers import SentenceTransformer, similarity_functions, util
+#from torch import embedding
 from selenium.webdriver.remote.webelement import WebElement
-from torch._higher_order_ops.while_loop import WhileLoopOp
+#from torch._higher_order_ops.while_loop import WhileLoopOp
 
 def main():
     tprint("COURSE REVIEW ANONYMIZER", font="small")
@@ -61,14 +60,8 @@ def push_to_site(username, password, website, ct_t_dict):
         element = driver.find_element(By.NAME, tag.get("name"))
         if element.text.replace("\n", "") in ct_t_dict.values():
             changed_text = [key for key, value in ct_t_dict.items() if value == element.text.replace("\n", "")]
-            print(changed_text)
             element.clear()
-            element.send_keys(changed_text[0])
-
-
-def check_changes(ct_t_dict):
-    pass
-
+            element.send_keys(changed_text[0]+ "---test")
 
 
 
@@ -94,8 +87,12 @@ def get_website_and_text(username, password, website):
         driver.find_element("id", "username").send_keys(username)
         driver.find_element("id", "password").send_keys(password)
         driver.find_element("name", "_eventId_proceed").click()
+        assert "Kursvärderingar" in driver.title
     except:
         print("Could not log in for some reason. Check that username and password is correct.")
+        driver.quit()
+        print("shutting down. Please run the program to try again")
+        raise SystemExit
         
     html = driver.page_source
     soup = bs(html, "html.parser")
@@ -174,7 +171,13 @@ def pick_website():
     Takes no arguments and returns the URL specified by 
     the user. 
     """
-    return input("Enter the URL for the course review you want to edit: ")
+    url = input("Enter the URL for the course review you want to edit: ")
+    kv_regex = re.compile("https://kv.uu.se/granska/[0-9]+")
+    if kv_regex.match(url):
+        return url
+    else:
+        print("The link provided doesn't seem to be a course evaluation link or it's incomplete, shutting down...")
+        raise SystemExit
 
 def get_login_details():
     """
@@ -225,7 +228,6 @@ def mark_named_entities(text_list):
 
     return text_dictionary
 
-
 def semantic_analysis(text_list):
     """
     Takes a list of text to be embedded and then 
@@ -242,7 +244,6 @@ def semantic_analysis(text_list):
     for textblock in text_list:
         tokenized_text = sentence_seperator(textblock)
         similarity_matrix = cosine_comp(tokenized_text, vector_data)  
-
         for vector_idx in range(len(similarity_matrix)):
             comp_vector = similarity_matrix[vector_idx]
             if torch.max(comp_vector) >= 0.58:
@@ -281,6 +282,4 @@ def cosine_comp(split_text, vector_data):
 
 
 if __name__ == "__main__":
-    start_time = time.time()
     main()
-    print(time.time() - start_time)
