@@ -24,11 +24,9 @@ def main():
     username, password = get_login_details()
     website = pick_website()
     text_list = get_website_and_text(username, password, website)
-    text_list = ["Göran var en väldigt bra lärare han gav oss många bra uppgifter att arbeta med", "karin var inte så bra. Det känndes som att hon inte ville vara där."]
     analysed_text_list = semantic_analysis(text_list)
     text_dictionary = mark_named_entities(analysed_text_list)
     ct_t_dict = change_entity_name(text_dictionary)
-    print(ct_t_dict)
     push_to_site(username,password,website, ct_t_dict)
 
 def push_to_site(username, password, website, ct_t_dict):
@@ -128,8 +126,9 @@ def change_entity_name(text_dictionary):
         text = str(key)
         changed_text = text
         for entity in value:
-            entity_name , _ = entity
-            changed_text = changed_text.replace(entity_name, "lärare X")
+            entity_name , ent_type = entity
+            if ent_type == "PRS":
+                changed_text = changed_text.replace(entity_name, "lärare X")
        
         
         text, changed_text = change_pronouns(text, changed_text)   
@@ -153,10 +152,11 @@ def change_pronouns(text, changed_text):
     changed_text -- text with edited entities
     text -- The original text with unchanged enities
     """
-    pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b"]
+    pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b", r"\b[Hh]onom\b", r"\b[Hh]enne\b"]
 
     changed_text = re.sub(pronouns[0], "lärare X", changed_text)
-    changed_text = re.sub(pronouns[1], "hen", changed_text)
+    for i in range(1,len(pronouns)):
+        changed_text = re.sub(pronouns[i], "hen", changed_text)
 
     return text, changed_text
 
@@ -216,8 +216,10 @@ def mark_named_entities(text_list):
     text_dictionary = {}
     for text in text_list:
         doc = nlp(text)
+        
         elist =[(ent.text, ent.label_) for ent in doc.ents]
         text_dictionary.update({text : elist})
+        
 
         
 
