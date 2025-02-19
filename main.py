@@ -4,7 +4,6 @@ import spacy
 import sv_core_news_lg
 import re
 import pickle
-#import time 
 from colorama import Back, Fore
 from art import * 
 from selenium import webdriver
@@ -12,9 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
 from sentence_transformers import SentenceTransformer, similarity_functions, util
-#from torch import embedding
 from selenium.webdriver.remote.webelement import WebElement
-#from torch._higher_order_ops.while_loop import WhileLoopOp
 
 def main():
     tprint("COURSE REVIEW ANONYMIZER", font="small")
@@ -44,8 +41,6 @@ def push_to_site(username, password, website, ct_t_dict):
     """
 
     try:
-        #options = webdriver.FirefoxOptions()
-        #options.add_argument("--headless")
         driver = webdriver.Firefox()
         driver.get(website)
         driver.find_element("id", "username").send_keys(username)
@@ -61,7 +56,7 @@ def push_to_site(username, password, website, ct_t_dict):
         if element.text.replace("\n", "") in ct_t_dict.values():
             changed_text = [key for key, value in ct_t_dict.items() if value == element.text.replace("\n", "")]
             element.clear()
-            element.send_keys(changed_text[0]+ "---test")
+            element.send_keys(changed_text[0])
 
 
 
@@ -119,17 +114,25 @@ def change_entity_name(text_dictionary):
     """
 
     ct_t_dict = {}
+    entity_set =set()
+    for value in text_dictionary.values():
+        entity_name, ent_type = value
+        if ent_type == "PRS":
+            entity_set.add(entity_name)
+
     for key, value in text_dictionary.items():
         text = str(key)
         changed_text = text
-        for entity in value:
-            entity_name , ent_type = entity
-            if ent_type == "PRS":
-                changed_text = changed_text.replace(entity_name, "lärare X")
-       
-        
+
+        for entity in entity_set:
+            if entity in changed_text:
+                changed_text = changed_text.replace(entity_name, "Lärare X")
+#       for entity in value:
+#           entity_name , ent_type = entity
+#           if ent_type == "PRS":
+#               changed_text = changed_text.replace(entity_name, "Lärare X")          
         text, changed_text = change_pronouns(text, changed_text)   
-        ct_t_dict.update({text:changed_text})
+        ct_t_dict.update({changed_text: text})
     return ct_t_dict
 
 
@@ -151,20 +154,11 @@ def change_pronouns(text, changed_text):
     """
     pronouns = [r"\b[Dd]u\b", r"\b[Hh][ao]n\b", r"\b[Hh]onom\b", r"\b[Hh]enne\b"]
 
-    changed_text = re.sub(pronouns[0], "lärare X", changed_text)
+    changed_text = re.sub(pronouns[0], "Lärare X", changed_text)
     for i in range(1,len(pronouns)):
         changed_text = re.sub(pronouns[i], "hen", changed_text)
 
     return text, changed_text
-
-    #print("-------------------------------------------------")
-    #print("original text: ")
-    #print(text)     
-    #print("\n")
-    #print("edited text: ")
-    #print(changed_text)
-    #print("\n")
-    #print("-------------------------------------------------")
 
 def pick_website():
     """
@@ -221,6 +215,7 @@ def mark_named_entities(text_list):
         doc = nlp(text)
         
         elist =[(ent.text, ent.label_) for ent in doc.ents]
+        print(elist)
         text_dictionary.update({text : elist})
         
 
@@ -247,7 +242,7 @@ def semantic_analysis(text_list):
         for vector_idx in range(len(similarity_matrix)):
             comp_vector = similarity_matrix[vector_idx]
             if torch.max(comp_vector) >= 0.58:
-                tokenized_text[vector_idx] = tokenized_text[vector_idx] 
+                tokenized_text[vector_idx] = "<ISSUE>" +tokenized_text[vector_idx] 
 
         analysed_text = ". ".join(tokenized_text) 
         analysed_text_list.append(analysed_text)
@@ -276,8 +271,8 @@ def cosine_comp(split_text, vector_data):
     model = SentenceTransformer("KBLab/sentence-bert-swedish-cased")
     st_embeddings = model.encode(split_text)
     
-    similarity_matrix = model.similarity(st_embeddings, vector_data)
-    return similarity_matrix
+    return model.similarity(st_embeddings, vector_data)
+    
     
 
 
