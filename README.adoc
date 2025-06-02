@@ -1,5 +1,7 @@
 = Introduction
 :hide-uri-scheme:
+:imagesdir: documentation_images
+
 This program was developed by Julius Ramshage as an amanuensis at 
 the department of sociology and department for 
 social work, during the autumn of 2024 and first quarter of 2025. 
@@ -24,7 +26,7 @@ image:python_download_edited.png[]
 
 Once a version of python 3.12 is chosen, click on it and scroll down to the files section.
 Click on _Windows installer (64-bit)_. The page should look like this:
-image:python_files_edited.png[]
+image::CRA_/python_files_edited.png[]
 
 In the description column it should say _Recommended_.
 Once you have clicked on it it
