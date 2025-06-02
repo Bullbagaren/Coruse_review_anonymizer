@@ -1,0 +1,12 @@
+# UI and formatting
+colorama>=0.4.6
+art>=5.9
+
+# Web scraping and automation
+selenium>=4.10.0
+beautifulsoup4>=4.12.0
+
+# NLP and machine learning
+spacy>=3.7.0
+torch>=2.0.0
+sentence-transformers>=2.2.2
