@@ -128,6 +128,9 @@ pip install -U pip setuptools wheel
 pip install -U spacy
 ----
 
+IMPORTANT: *If this throws and error, see the the trouble shooting section on spacy.*
+
+
 You have now installed all the libraries needed to run the program. 
 
 == Running the program
@@ -225,5 +228,18 @@ If the issue still persists ask someone who knows more or open
 an issue on github and please provide the full error message in any issue
 that you decide to open.
 
+
+=== Spacy module not found
+during testing we found that deactivating you virtual envorinment 
+seemed to solve this issue, to deactivate the environment run 
+[powershell,]
+----
+deactivate
+----
+Now you can resume the step where you were.
+
+Welcome back, if it threw the error message that you need to run a certain command to edit pip, then do so,
+this includes the whole filepath from _C:_ all the way to _wheel_  then you can try to install sv_core_news_lg.
+The error message provides you whith what it wants you to do!
 
 
