@@ -3,60 +3,60 @@
 :imagesdir: documentation_images
 
 This program was developed by Julius Ramshage as an amanuensis at 
-the department of sociology and department for 
-social work, during the autumn of 2024 and first quarter of 2025. 
+the Department of Sociology and Department for 
+Social Work, during the autumn of 2024 and first quarter of 2025. 
 The source code is available for free under the GPL v3 license 
-on github at https://github.com/Bullbagaren/Coruse_review_anonymizer. 
+on https://github.com/Bullbagaren/Coruse_review_anonymizer[github(link)]. 
 Questions about the source code and bug reports can also be submitted on github.
 
 == Installation
-If you already have installed python 3.12 or know how to do it you may
-skip the section on installing python. Python 3.12 is used due to a library conflict with Spacy
+If you already have installed python 3.12.9 or know how to do it you may
+skip the section on installing python. Python 3.12.9 is used due to a library conflict with Spacy
 and a newer version of python at the time of writing. Use newer versions at your own risk.
+If you happen to be an advanced user you can probably fingure it on your own 
+how to run the program, this guide is intended for novice users.
 
-
-IMPORTANT: The program need firefox to run so make sure it is installed before 
-trying to run the program.
 
 === Installing python
-To install Python head to the download page on the python website https://www.python.org/downloads/
-Scroll down to _looking for a specific release_ and download _Python 3.12.x_. _x_ in this case 
-refers to any sub-version of python 3.12. It should look something like this: 
-image:python_download_edited.png[]
+To install Python follow this link 
+https://www.python.org/downloads/release/python-3129/[to download the version of python (link)]
+that we need. Once on the page scroll down to the 
+_files_ section, it should look like this
 
-Once a version of python 3.12 is chosen, click on it and scroll down to the files section.
-Click on _Windows installer (64-bit)_. The page should look like this:
-image::CRA_/python_files_edited.png[]
+image::find_installer.png[]
 
 In the description column it should say _Recommended_.
-Once you have clicked on it it
-should automatically download the file.
+you should click on the name of the recomeded installer,
+which is most likley _Windows installer (64-bit). Once 
+you have clicked it, the file should be automatically downloaded.
 When the file is downloaded, head to the folder where
 it is downloaded and run it. This should not
 require admin privileges and follow the install instructions.
 The window should look like this
 
 
-image:python_install1_edited.png[]
+image::python_install1_edited.png[]
 
 IMPORTANT: make sure the checkbox with _Add python.exe to PATH_ is ticked in.
 
 If the install it successful you should see this on your monitor
 
-image:python_install3.png[]
+image::python_install3.png[]
 
 You may now close it, and you can proceed to the next step.
 
 == Downloading the script
-To download the scrip you will need to fetch it from github at: 
-https://github.com/Bullbagaren/Coruse_review_anonymizer. 
+To download the scrip you will need to fetch it from 
+https://github.com/Bullbagaren/Coruse_review_anonymizer[github (link)]. 
 
 TIP: If you know how to use git, you can probably skip to the 
 section for how to run the script.
 
 Once there click on the green button labeled code,
 a dropdown menu should appear and look something like this:
+
 image:github_edited.png[]
+
 Click on the download zip button on the bottom of the dropdown menu,
 and save the zip archive to the location of your choosing.
 
@@ -66,7 +66,8 @@ the contents of the folder. This is important because where you extract
 the content will determine where you will run the program from.
 So make sure you extract it to a place outside the downloads folder.
 
-
+IMPORTANT: To extract an archive, right-click on the
+zip-file, and thne select _extract all_ (swedish: extrahera alla)
 
 
 == Setting up the environment
@@ -79,6 +80,9 @@ Select _open in terminal_ (swedish: Öppna i Terminal).
 You should now have a black window open. In the black window
 run the following command:
 
+IMPORTANT: Running a command means to type the command into the *Terminal*
+(black window) and then executing it by hitting _enter_
+
 [source, powershell]
 ----
 python -m venv .venv
@@ -90,15 +94,20 @@ run the program the environment needs to be activated. This is
 done by the following command
 [source, powershell]
 ----
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 ----
+
+TIP: you can use tab-completion to type quicker. by partially typing what you want 
+you can then press _tab_ to complete it. for this command it might look like this: 
+ .ve[tab] Sc[tab] ac[tab] to complete the command.
+
 _(.venv)_ should now appear on the left hand side of the terminal,
 indicating that the environment is active. Now we are ready to install
 the external libraries, this is done by the following command:
 
 [source, powershell]
 ----
-pip install -r requrements.txt
+pip install -r requirements.txt
 ----
 This will take a bit of time to run and should without fault install all 
 required libraries. Once it's done we have one more command to run.
@@ -109,6 +118,15 @@ python -m spacy download sv_core_news_lg
 This downloads the model which performs the named entity recognition
 to find and censor names that appear in the reviews. 
 
+If you get an error saying tha spacy doesn't exist, try the following commands 
+and then re-run the command above. 
+
+[python,]
+----
+pip install -U pip setuptools wheel
+
+pip install -U spacy
+----
 
 You have now installed all the libraries needed to run the program. 
 
@@ -120,6 +138,10 @@ reactivate it with:
 ----
 .\venv\Scripts\activate
 ----
+
+IMPORTANT: The program need firefox to run so make sure it is installed before 
+trying to run the program.
+
 The libraries previously installed with still be installed, so nothing else should be required.
 Then to run the program you can go ahead and run the command:
 [source, powershell]
@@ -149,7 +171,6 @@ When the program is finished it will enter the sanitised text into the web-brows
 it opened. Now is when you have to manually check so that everything is correct.
 When the program identifies what it considers a bad word it will tag it with
 
-
 ----
 <ISSUE><ISSUE>
 ----
@@ -166,8 +187,6 @@ If so you can close down the browser and exit the program. If you did not receiv
 you can just save the changes and then head over to the course review website and
 manually publish the saved version.
 
-
-
 IMPORTANT: You are most likely to get this error when letting the website be open for too 
 long without any changes made. 
 
@@ -183,12 +202,14 @@ the URL must be wrong, first double check so the URL is correct, secondly make s
 you have the privileges to review and edit the course reviews. It
 should also go without saying that you have doublechecked so that you have
 correctly spelled your AKKA-id and password. If the issue still persists, move on
-to the next step
+to the next step.
 
 
 Make sure that the virtual environment is activated. So remember to check
 that it does in fact say (.venv) next to your username in the terminal (black window).
 
+If there are no files, in the files section of the provided download link
+then download the recomended installer for the latest version of python. 
 
 === More advanced steps
 
@@ -198,8 +219,11 @@ First step to try and resolve the issue is to repeat the step were we install th
 libraries using the requirements.txt file. If the issue still persists, try installing
 different versions of python, spacy during the development period of this
 application proved to be temperamental depending on the version of python that
-was used. If the issue still persists ask someone who knows more or open
+was used. 
+
+If the issue still persists ask someone who knows more or open
 an issue on github and please provide the full error message in any issue
 that you decide to open.
+
 
 

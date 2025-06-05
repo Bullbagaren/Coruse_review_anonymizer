@@ -443,10 +443,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This program was developed by Julius Ramshage as an amanuensis at
-the department of sociology and department for
-social work, during the autumn of 2024 and first quarter of 2025.
+the Department of Sociology and Department for
+Social Work, during the autumn of 2024 and first quarter of 2025.
 The source code is available for free under the GPL v3 license
-on github at <a href="https://github.com/Bullbagaren/Coruse_review_anonymizer" class="bare">github.com/Bullbagaren/Coruse_review_anonymizer</a>.
+on <a href="https://github.com/Bullbagaren/Coruse_review_anonymizer">github(link)</a>.
 Questions about the source code and bug reports can also be submitted on github.</p>
 </div>
 </div>
@@ -457,45 +457,37 @@ Questions about the source code and bug reports can also be submitted on github.
 <div class="paragraph">
 <p>If you already have installed python 3.12 or know how to do it you may
 skip the section on installing python. Python 3.12 is used due to a library conflict with Spacy
-and a newer version of python at the time of writing. Use newer versions at your own risk.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-The program need firefox to run so make sure it is installed before
-trying to run the program.
-</td>
-</tr>
-</table>
+and a newer version of python at the time of writing. Use newer versions at your own risk.
+If you happen to be an advanced user you can probably fingure it on your own
+how to run the program, this guide is intended for novice users.</p>
 </div>
 <div class="sect2">
 <h3 id="_installing_python">Installing python</h3>
 <div class="paragraph">
-<p>To install Python head to the download page on the python website <a href="https://www.python.org/downloads/" class="bare">www.python.org/downloads/</a>
-Scroll down to <em>looking for a specific release</em> and download <em>Python 3.12.x</em>. <em>x</em> in this case
-refers to any sub-version of python 3.12. It should look something like this:
-<span class="image"><img src="documentation_images/python_download_edited.png" alt="python download edited"></span></p>
+<p>To install Python follow this link
+<a href="https://www.python.org/downloads/release/python-3129/">to download the version of python (link)</a>
+that we need. Once on the page scroll down to the
+<em>files</em> section, it should look like this</p>
 </div>
-<div class="paragraph">
-<p>Once a version of python 3.12 is chosen, click on it and scroll down to the files section.
-Click on <em>Windows installer (64-bit)</em>. The page should look like this:
-image::CRA_/python_files_edited.png[]</p>
+<div class="imageblock">
+<div class="content">
+<img src="documentation_images/find_installer.png" alt="find installer">
+</div>
 </div>
 <div class="paragraph">
 <p>In the description column it should say <em>Recommended</em>.
-Once you have clicked on it it
-should automatically download the file.
+you should click on the name of the recomeded installer,
+which is most likley _Windows installer (64-bit). Once
+you have clicked it, the file should be automatically downloaded.
 When the file is downloaded, head to the folder where
 it is downloaded and run it. This should not
 require admin privileges and follow the install instructions.
 The window should look like this</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="documentation_images/python_install1_edited.png" alt="python install1 edited"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="documentation_images/python_install1_edited.png" alt="python install1 edited">
+</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -512,8 +504,10 @@ make sure the checkbox with <em>Add python.exe to PATH</em> is ticked in.
 <div class="paragraph">
 <p>If the install it successful you should see this on your monitor</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="documentation_images/python_install3.png" alt="python install3"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="documentation_images/python_install3.png" alt="python install3">
+</div>
 </div>
 <div class="paragraph">
 <p>You may now close it, and you can proceed to the next step.</p>
@@ -525,8 +519,8 @@ make sure the checkbox with <em>Add python.exe to PATH</em> is ticked in.
 <h2 id="_downloading_the_script">Downloading the script</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To download the scrip you will need to fetch it from github at:
-<a href="https://github.com/Bullbagaren/Coruse_review_anonymizer" class="bare">github.com/Bullbagaren/Coruse_review_anonymizer</a>.</p>
+<p>To download the scrip you will need to fetch it from
+<a href="https://github.com/Bullbagaren/Coruse_review_anonymizer">github (link)</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -543,9 +537,13 @@ section for how to run the script.
 </div>
 <div class="paragraph">
 <p>Once there click on the green button labeled code,
-a dropdown menu should appear and look something like this:
-<span class="image"><img src="documentation_images/github_edited.png" alt="github edited"></span>
-Click on the download zip button on the bottom of the dropdown menu,
+a dropdown menu should appear and look something like this:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="documentation_images/github_edited.png" alt="github edited"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on the download zip button on the bottom of the dropdown menu,
 and save the zip archive to the location of your choosing.</p>
 </div>
 <div class="paragraph">
@@ -554,6 +552,19 @@ it to a different location of your choosing when extracting
 the contents of the folder. This is important because where you extract
 the content will determine where you will run the program from.
 So make sure you extract it to a place outside the downloads folder.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+To extract an archive, right-click on the
+zip-file, and thne select <em>extract all</em> (swedish: extrahera alla)
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -570,6 +581,19 @@ Select <em>open in terminal</em> (swedish: Öppna i Terminal).
 You should now have a black window open. In the black window
 run the following command:</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Running a command means to type the command into the <strong>Terminal</strong>
+(black window) and then executing it by hitting <em>enter</em>
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-powershell" data-lang="powershell">python -m venv .venv</code></pre>
@@ -584,8 +608,22 @@ done by the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-powershell" data-lang="powershell">.\venv\Scripts\activate</code></pre>
+<pre class="highlight"><code class="language-powershell" data-lang="powershell">.\.venv\Scripts\activate</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+you can use tab-completion to type quicker. by partially typing what you want
+you can then press <em>tab</em> to complete it. for this command it might look like this:
+ .ve[tab] Sc[tab] ac[tab] to complete the command.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><em>(.venv)</em> should now appear on the left hand side of the terminal,
@@ -594,7 +632,7 @@ the external libraries, this is done by the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-powershell" data-lang="powershell">pip install -r requrements.txt</code></pre>
+<pre class="highlight"><code class="language-powershell" data-lang="powershell">pip install -r requirements.txt</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -627,6 +665,19 @@ reactivate it with:</p>
 <div class="content">
 <pre class="highlight"><code class="language-powershell" data-lang="powershell">.\venv\Scripts\activate</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The program need firefox to run so make sure it is installed before
+trying to run the program.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The libraries previously installed with still be installed, so nothing else should be required.
@@ -732,11 +783,15 @@ the URL must be wrong, first double check so the URL is correct, secondly make s
 you have the privileges to review and edit the course reviews. It
 should also go without saying that you have doublechecked so that you have
 correctly spelled your AKKA-id and password. If the issue still persists, move on
-to the next step</p>
+to the next step.</p>
 </div>
 <div class="paragraph">
 <p>Make sure that the virtual environment is activated. So remember to check
 that it does in fact say (.venv) next to your username in the terminal (black window).</p>
+</div>
+<div class="paragraph">
+<p>If there are no files, in the files section of the provided download link
+then download the recomended installer for the latest version of python.</p>
 </div>
 </div>
 <div class="sect2">
@@ -748,7 +803,10 @@ First step to try and resolve the issue is to repeat the step were we install th
 libraries using the requirements.txt file. If the issue still persists, try installing
 different versions of python, spacy during the development period of this
 application proved to be temperamental depending on the version of python that
-was used. If the issue still persists ask someone who knows more or open
+was used.</p>
+</div>
+<div class="paragraph">
+<p>If the issue still persists ask someone who knows more or open
 an issue on github and please provide the full error message in any issue
 that you decide to open.</p>
 </div>
@@ -758,7 +816,7 @@ that you decide to open.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-02 09:56:30 +0200
+Last updated 2025-06-05 10:47:40 +0200
 </div>
 </div>
 </body>
