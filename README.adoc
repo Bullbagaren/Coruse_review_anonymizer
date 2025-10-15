@@ -3,36 +3,33 @@
 :imagesdir: documentation_images
 
 This program was developed by Julius Ramshage as an amanuensis at 
-the Department of Sociology and Department for 
+the Department of Sociology and Department of 
 Social Work, during the autumn of 2024 and first quarter of 2025. 
 The source code is available for free under the GPL v3 license 
 on https://github.com/Bullbagaren/Coruse_review_anonymizer[github(link)]. 
 Questions about the source code and bug reports can also be submitted on github.
 
 == Installation
-If you already have installed python 3.12.9 or know how to do it you may
+If you have already installed python 3.12.9 or know how to do it, you may
 skip the section on installing python. Python 3.12.9 is used due to a library conflict with Spacy
-and a newer version of python at the time of writing. Use newer versions at your own risk.
-If you happen to be an advanced user you can probably fingure it on your own 
-how to run the program, this guide is intended for novice users.
+and a newer version of python at the time of writing. 
 
 
 === Installing python
-To install Python follow this link 
-https://www.python.org/downloads/release/python-3129/[to download the version of python (link)]
+To install Python, first download the correct version
+https://www.python.org/downloads/release/python-3129/[here (link)]
 that we need. Once on the page scroll down to the 
 _files_ section, it should look like this
 
 image::find_installer.png[]
 
-In the description column it should say _Recommended_.
-you should click on the name of the recomeded installer,
-which is most likley _Windows installer (64-bit). Once 
+Choose the version that says "Recommended" in the column Description, 
+which most likely is the Windows installer (64-bit) version. Once 
 you have clicked it, the file should be automatically downloaded.
 When the file is downloaded, head to the folder where
 it is downloaded and run it. This should not
 require admin privileges and follow the install instructions.
-The window should look like this
+The window should look like this:
 
 
 image::python_install1_edited.png[]
@@ -139,7 +136,7 @@ if you don't see _(.venv)_ in the left hand of the terminal window you can alway
 reactivate it with: 
 [source, powershell]
 ----
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 ----
 
 IMPORTANT: The program need firefox to run so make sure it is installed before 
